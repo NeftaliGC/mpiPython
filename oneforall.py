@@ -29,6 +29,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='MPI messaje.')
     parser.add_argument('X', type=str, help='The message to be broadcasted')
+    parser.add_argument('source', type=int, help='The source of the broadcast')
 
     args = parser.parse_args()
 
@@ -41,7 +42,7 @@ if __name__ == '__main__':
     assert 2**d == num_procs, "Number of processes must be a power of 2"
 
     # Source of the broadcast
-    source = 1  # You can change this to any valid rank
+    source = args.source  # You can change this to any valid rank
     # The message to be broadcasted
     if my_id == source:
         X = args.X

@@ -1,5 +1,6 @@
 from mpi4py import MPI
 import numpy as np
+import argparse
 
 def all_to_one_reduce(d, my_id, m, X):
     comm = MPI.COMM_WORLD
@@ -21,6 +22,13 @@ def all_to_one_reduce(d, my_id, m, X):
     return sum
 
 def main():
+
+    parser = argparse.ArgumentParser(description='MPI vector.')
+    parser.add_argument('m', type=int, help='The size of the vector')
+    parser.add_argument('X', type=str, help='The vector to be reduced')
+
+    args = parser.parse_args()
+
     comm = MPI.COMM_WORLD
     my_id = comm.Get_rank()
     num_procs = comm.Get_size()
@@ -28,8 +36,21 @@ def main():
 
     # Supongamos que cada procesador tiene el mismo vector X para simplificar.
     # En un escenario real, cada procesador podría tener diferentes datos.
-    m = 10
-    X = np.full(m, my_id, dtype='d')  # Ejemplo de datos iniciales
+    m = args.m
+
+    if args.X == 'random':
+        # Vector aleatorio
+        X = np.random.rand(m).round(2) * 100
+
+    if args.X == 'my_id':
+        # Vector con el id del procesador
+        X = np.full(m, my_id, dtype='d')
+
+    if args.X == 'ones':
+        # Vector de unos
+        X = np.ones(m, dtype='d')
+
+    print(f"Proceso {my_id} tiene el vector {X}")
 
     # Calcular d como el log2 del número de procesadores
     d = int(np.log2(num_procs))
@@ -38,6 +59,7 @@ def main():
 
     # Solo el procesador 0 imprimirá el resultado final.
     if my_id == 0:
+        print("-------------------------")
         print("Resultado final en el nodo 0:", result)
 
 if __name__ == "__main__":

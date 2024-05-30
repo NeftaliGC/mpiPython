@@ -23,10 +23,10 @@ def main():
                                 [13, 14, 15, 16]
                             ])
         matrix_B = np.array([
-                                [1, 0, 0, 1],
-                                [0, 1, 1, 0],
-                                [1, 0, 1, 0],
-                                [0, 1, 0, 1]
+                                [16, 17, 18, 19],
+                                [20, 21, 22, 23],
+                                [24, 25, 26, 27],
+                                [28, 29, 30, 31]
                             ])
 
         matrix_C = np.zeros((N, N))
@@ -55,6 +55,15 @@ def main():
                 numsent += 1
             else:
                 comm.send(None, dest=source_worker, tag=N)
+
+        #Imprimir matrices originales
+        print("Matriz A:")
+        print(matrix_A)
+        print("\n")
+        print("Matriz B:")
+        print(matrix_B)
+        print("\n")
+
 
         # Convertir a enteros antes de imprimir
         matrix_C = matrix_C.astype(int)

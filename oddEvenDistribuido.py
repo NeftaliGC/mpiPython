@@ -1,5 +1,6 @@
 from mpi4py import MPI
 import numpy as np
+import argparse
 
 def merge_sort(arr):
     if len(arr) > 1:
@@ -71,11 +72,25 @@ def even_odd_sort(L):
     comm.Gather(local_a, L, root=0)
 
 def main():
+
+    parser = argparse.ArgumentParser(description='MPI vector.')
+    parser.add_argument('--vector', required=False, type=str, help='The vector to be sorted')
+    parser.add_argument('--reverse_from', required=False, type=int, help='The vector to be sorted')
+    
+    args = parser.parse_args()
+
     comm = MPI.COMM_WORLD
     rank = comm.Get_rank()
 
     if rank == 0:
-        L = np.random.randint(0, 100, size=16)
+        if args.vector == 'random':
+            L = np.random.randint(0, 100, size=16)
+        elif args.vector == 'reverse':
+            L = np.arange(16, 0, -1)
+
+        elif int(args.reverse_from) >= 16:
+            L = np.arange(args.reverse_from, args.reverse_from - 16, -1)
+
         print("Unsorted array:", L)
     else:
         L = None
